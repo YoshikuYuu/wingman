@@ -71,13 +71,49 @@ RESPONSE_SCHEMA = {
 DRAFT_INSTRUCT = """
     You are the AI browser extension 'Wingman' that is given the user's chat history, the user's
     relationship to the recipient, and the user's draft message. Based on the draft message,
-    generate an improved message. Your message should imitate the user's texting conventions.
+    generate an improved message that is appropriate for the user's relationship with the 
+    recipient and considers relevant information in the chat history. Your message should
+    imitate the user's texting conventions.
+
+    Example Input 1:
+    Relationship: girlfriend
+    Chat History
+    clkr: i'm at the library lol
+    user: okay, I'll see you there
+    user: yo
+    clkr: hiiii
+    Draft Message: how was your day?
+
+    Example Output 1:
+    hey, how was your day? i can't wait to see you later <3
+
+    Example Input 2:
+    Relationship: co-worker
+    Chat History:
+    user: Hi John, are you done with the implementing the new feature?
+    john: I finished a few minutes ago! I'll send you the code now.
+    Draft Message: Okay, thanks! I'll review it. Then we can get lunch
+
+    Example Output 2:
+    Great, thanks for the quick turnaround! After I review it, do you want to grab lunch?
+
+    Example Input 3:
+    Relationship: friend
+    Chat History:
+    friend: dude, did you see the trailer for Arcane?
+    user: YO hold up
+    user: I'm watching it rn 
+    friend: Fortiche went crazy on the animation fr
+    Draft Message: yeah, it looks so good
+
+    Example Output 3:
+    the Fortiche artstyle is so clean! I'm hoping the story will be just as good
     """
 NO_DRAFT_INSTRUCT = """
     You are the AI browser extension 'Wingman' that is given the user's chat history, and the user's
     relationship to the recipient. Generate a message for the user that continues the conversation
-    in a way that is appropriate for the user's relationship with the recipient. Your message should
-    imitate the user's texting conventions.
+    in a way that is appropriate for the user's relationship with the recipient and considers relevant
+    information in the chat history. Your message should imitate the user's texting conventions.
 
     Example Input 1:
     Relationship: girlfriend
@@ -102,10 +138,12 @@ NO_DRAFT_INSTRUCT = """
     No worries. Take your time and don't overwork yourself!
     """
 
-def generate_rizz(chat_history, relationship) -> str:
+def generate_rizz(relationship, chat_history, draft=None) -> str:
     """
     Generate a message that continues the conversation in a way that is appropriate for the user's
-    relationship with the recipient.
+    relationship with the recipient. The message should consider relevant information in the chat
+    history and imitate the user's texting conventions. If a draft message is provided, the generated
+    message should be an improved version of the draft message.
 
     Parameters:
         chat_history (list of dictionaries):
@@ -118,7 +156,12 @@ def generate_rizz(chat_history, relationship) -> str:
     """
 
     chat_history_string = process_chat_history(chat_history)
-    prompt = f"Relationship: {relationship}\nChat History:\n{chat_history_string}"
+
+    if draft:
+        prompt = f"Relationship: {relationship}\nChat History:\n{chat_history_string}\nDraft Message: {draft}"
+    else:
+        prompt = f"Relationship: {relationship}\nChat History:\n{chat_history_string}"
+    
     print(prompt)
 
     try:
@@ -128,7 +171,7 @@ def generate_rizz(chat_history, relationship) -> str:
             model=model_id,
             contents=types.Content(role="user", parts=[types.Part.from_text(text=prompt)]),
             config=types.GenerateContentConfig(
-                system_instruction=types.Part.from_text(text=NO_DRAFT_INSTRUCT),
+                system_instruction=types.Part.from_text(text=DRAFT_INSTRUCT if draft else NO_DRAFT_INSTRUCT),
                 temperature=1.5,
                 max_output_tokens=100,
                 response_mime_type="text/plain",
@@ -140,17 +183,6 @@ def generate_rizz(chat_history, relationship) -> str:
         return str(e)
     
     return response.text
-
-def add_rizz() -> str:
-    """
-    
-    """
-
-    try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-    except Exception as e:
-        return str(e)
-    
 
 def process_chat_history(chat_history):
     # Process messages in the chat history into a prompt
