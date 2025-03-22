@@ -83,10 +83,22 @@ NO_DRAFT_INSTRUCT = """
     in a way that is appropriate for the user's relationship with the recipient.
     """
 
-def generate_rizz() -> str:
+def generate_rizz(chat_history, relationship) -> str:
+    """
+    Generate a message that continues the conversation in a way that is appropriate for the user's
+    relationship with the recipient.
+
+    Parameters:
+        chat_history (list of dictionaries):
+            An ordered list of messages in the chat history. Each dictionary corresponds to a
+            message and has the following keys:
+            - "sender": The sender of the message.
+            - "message": The message content.
+        relationship (str): The user's relationship to the recipient.
+    """
     try:
-        # Set up the Gemini client with Google search tool
         client = genai.Client(api_key=GEMINI_API_KEY)
+        model_id = "gemini-2.0-flash"
     except Exception as e:
         return str(e)
 
@@ -94,7 +106,7 @@ def add_rizz() -> str:
     try:
         # Set up the Gemini client with Google search tool
         client = genai.Client(api_key=GEMINI_API_KEY)
-        model_id = "gemini-2.0-flash-exp"
+        model_id = "gemini-2.0-flash"
         # google_search_tool = Tool(
         #     google_search = GoogleSearch()
         # )
