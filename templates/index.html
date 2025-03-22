@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingman Demo</title>
+</head>
+<body>
+    <h1>Wingman Demo</h1>
+
+    <form id="demoForm" action="javascript:void(0);">
+        <div>
+            <label for="me_id">Your ID: </label>
+            <input type="text" id="me_id" name="me_id" required>
+        </div>
+        <div>
+            <label for="current_message">Current Message: </label>
+            <input type="text" id="current_message" name="current_message" required>
+        </div>
+        <div>
+            <button type="button" onclick="sendDataToFlask()">Send Data to Flask</button>
+        </div>
+    </form>
+
+    <div>
+        <h2>Response:</h2>
+        <p id="response">Waiting for response...</p>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
