@@ -1,0 +1,11 @@
+<html>
+  <body>
+    <h1>Hello Extensions</h1>
+    <div id="typedMessage">Detecting text (not)</div>
+    <script src='window.js'></script>
+    <script>
+    console.log('window js ran popup can close now.');
+    chrome.extension.getViews({type: 'popup'}).forEach(v => v.close());
+    </script>
+  </body>
+</html>
