@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from wingman import *
+from testfilesdelete.testInstaParsing import *
 
 app = Flask(__name__, static_url_path='/static')
 
