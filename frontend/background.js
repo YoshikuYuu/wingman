@@ -27,7 +27,7 @@ function injectFloatingIframe(tabId) {
             var existingIframe = document.getElementById('floatingIframe');
             if (existingIframe) {
                 console.log("Floating iframe already exists. Removing ");
-                existingIframe.parentNode.removeChild(existingIframe);
+                return;
                 
             }
 
@@ -44,14 +44,15 @@ function injectFloatingIframe(tabId) {
             floatingIframe.style.border = '1px solid black';
             floatingIframe.style.zIndex = '10000';
             floatingIframe.src = chrome.runtime.getURL('iframe.html');
-            
-            // print the src attribute to the iframe 
-            console.log("iframe src: " + floatingIframe.src);
+        
+        // print the src attribute to the iframe 
+        console.log("iframe src: " + floatingIframe.src);
 
-            document.body.appendChild(floatingIframe);
+        document.body.appendChild(floatingIframe);
         }
-    });
+});
 }
+
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -74,9 +75,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     getTabUrl(tabId, (taburl) => {
         console.log("tab updated url: " + taburl);
         if (taburl) {
-            const dmPattern = /https:\/\/www\.instagram\.com\/direct\/t\/\d+/;
+            const dmPattern = /https:\/\/discord\.com\/channels\/@me\/\d+/;
             if (dmPattern.test(taburl)) {
-                console.log("instagram DM opened: " + taburl);
+                console.log("discord DM opened: " + taburl);
                 injectFloatingIframe(tabId);
             }
         }
@@ -88,9 +89,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     getTabUrl(activeInfo.tabId, (taburl) => {
         console.log("tab activated url: " + taburl);
         if (taburl) {
-            const dmPattern = /https:\/\/www\.instagram\.com\/direct\/t\/\d+/;
+            const dmPattern = /https:\/\/discord\.com\/channels\/@me\/\d+/;
             if (dmPattern.test(taburl)) {
-                console.log("instagram DM opened: " + taburl);
+                console.log("discord DM opened: " + taburl);
                 injectFloatingIframe(activeInfo.tabId);
             }
         }
@@ -102,9 +103,9 @@ chrome.tabs.onHighlighted.addListener((highlightInfo) => {
     getTabUrl(highlightInfo.tabIds[0], (taburl) => {
         console.log("tab highlighted url: " + taburl);
         if (taburl) {
-            const dmPattern = /https:\/\/www\.instagram\.com\/direct\/t\/\d+/;
+            const dmPattern = /https:\/\/discord\.com\/channels\/@me\/\d+/;
             if (dmPattern.test(taburl)) {
-                console.log("instagram DM opened: " + taburl);
+                console.log("discord DM opened: " + taburl);
                 injectFloatingIframe(highlightInfo.tabIds[0]);
             }
         }
