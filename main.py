@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, render_template, request
 from gemini import generate_rizz
 
+app = Flask(__name__)
+
 # Function that recieves data from the front end
 @app.route('/rizzify', methods=['POST'])
 def rizzify():
