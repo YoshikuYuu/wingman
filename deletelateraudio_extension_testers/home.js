@@ -45,7 +45,7 @@ function captureTabAudio() {
   });
 }
 
-////////////////////
+//////////////////// Only field Colleen "should" need to edit
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("share-audio-button").addEventListener("click", function () {
@@ -58,14 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-
+/////////////////
 
 async function send_audio(name) {
   console.log("Reached2");
   let filename = "C:/Users/Janet/Downloads/" + name;
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/get_data", {
+    const response = await fetch("http://127.0.0.1:81/audio_advice", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

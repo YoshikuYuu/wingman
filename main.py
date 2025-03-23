@@ -39,6 +39,8 @@ def audio_advice():
     chat_history = [{'type': 'text', 'sender': str(relationship), 'content': str(transcription)}]
 
     return_msg = generate_rizz(relationship, chat_history)
+
+    print(return_msg)
     if return_msg is None:
         return jsonify({"status": "error", "msg": "Failed to generate a message."})
     else:
