@@ -4,22 +4,16 @@
     "version": "1.0",
     "manifest_version": 3,
     "action": {
-      "default_icon": "icon.jpg",
+      "default_icon": "frontend/icon.jpg",
       "default_title" : "CLICK ME",
-      "default_popup": "home.html"
+      "default_popup": "frontend/home.html"
     },
     "background": {
-    "service_worker": "background.js",
+    "service_worker": "frontend/background.js",
     "type": "module"
     },
     "permissions": [
       "tabs",
-      "activeTab",
-      "history",
-      "storage"
-    ],
-    "externally_connectable": {
-    "host_permissions": [
+      "activeTab"
     ]
-  }
 }
