@@ -40,9 +40,19 @@ function readTextField() {
         chrome.scripting.executeScript({
             target: { tabId: tabs[0].id },
             func: function() {
+
+
                 // Select all chat message containers
                 const messageContainers = document.querySelectorAll('li.messageListItem__5126c');
-                const messages = [];
+                const messages = {'current-input': 'null', 'chat-history': []};
+
+                // typing input field
+                var inputField = document.querySelector('span[data-slate-string="true"]');
+                console.log("inputField: " + inputField);
+                var typedMessage = inputField ? inputField.innerText : null;
+
+                messages['current-input'] = typedMessage;
+
                 
                 var last_username = "";
                 messageContainers.forEach(container => {
@@ -73,25 +83,32 @@ function readTextField() {
                         message: messageContent,
                         imageSrc: imageSrc
                     };
-                    messages.push(messageObject);
-                    
-
+                    messages['chat-history'].push(messageObject);
 
                 });
                 // Log the messages JSON object
                  console.log(JSON.stringify(messages, null, 2));
                  
-
-                // typing input field
-                var inputField = document.querySelector('span[data-slate-string="true"]');
-                console.log("inputField: " + inputField);
-                if (inputField) {
-                    // Extract the text inside the input field
-                    var typedMessage = inputField.innerText || inputField.value || "";
-                    chrome.runtime.sendMessage({ action: "getMessage", message: typedMessage });
-                } else {
-                    chrome.runtime.sendMessage({ action: "getMessage", message: null });
-                }
+                 try {
+                    const response = fetch("http://127.0.0.1:5000/apply_rizz", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                
+                    const data = response.json();
+                      if (data.status === "success") {
+                        console.log(data.message);  // Show success message
+                        window.location.href = "/dashboard";  // Redirect after successful signup
+                      } else {
+                          console.error("Login failed:", data.message);  // Handle error message
+                      }
+                    } catch (error) {
+                      console.error("Error:", error);
+                    }
+                
             }  
         });
     });
