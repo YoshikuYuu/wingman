@@ -81,6 +81,19 @@ DESCRIBE_IMG_INSTRUCT = """
     "an image depicting [description of the image]."
     """
 
+def gemini_transcribe(filename: str):
+    client = genai.Client(api_key="AIzaSyByfScdoYEExsECaBOvaHqXEgOfI19uBOA")
+
+    myfile = client.files.upload(file=filename)
+    prompt = 'Generate a transcript of the speech.'
+
+    response = client.models.generate_content(
+      model='gemini-2.0-flash',
+      contents=[prompt, myfile]
+    )
+
+    return (response.text)
+
 def describe_image(url: str) -> str:
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
@@ -113,7 +126,6 @@ def describe_image(url: str) -> str:
     except Exception as e:
         return str(e)
     
-
 def generate_rizz(relationship, chat_history, draft=None) -> str:
     """
     Generate a message that continues the conversation in a way that is appropriate for the user's
