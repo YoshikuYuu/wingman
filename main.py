@@ -35,9 +35,14 @@ def audio_advice():
 
     filename = str(data.get('filename'))
     transcription = gemini_transcribe(filename)
-    # return_msg = generate_rizz(relationship)
 
-    return jsonify({'message': 'Hello from Flask!'}), 200
+    chat_history = [{'type': 'text', 'sender': str(relationship), 'content': str(transcription)}]
+
+    return_msg = generate_rizz(relationship, chat_history)
+    if return_msg is None:
+        return jsonify({"status": "error", "msg": "Failed to generate a message."})
+    else:
+        return jsonify({"status": "success", "msg": return_msg})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=81)
