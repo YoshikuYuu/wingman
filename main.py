@@ -9,7 +9,7 @@ def wingman():
     return render_template('index.html')
 
 # Function that recieves data from the front end
-@app.route('/apply_rizz', methods=['POST'])
+@app.route('/rizzify', methods=['POST'])
 def apply_rizz():
     data = request.get_json()
     
