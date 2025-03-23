@@ -22,25 +22,6 @@ function generateRandomName() {
   return str;
 }
 
-// function captureTabAudio() {
-//   chrome.tabCapture.capture({audio: true, video: false}, (stream) => {
-
-//       // these lines enable the audio to continue playing while capturing
-//       context = new AudioContext();
-//       var newStream = context.createMediaStreamSource(stream);
-//       newStream.connect(context.destination);
-
-//       const recorder = new MediaRecorder(stream);
-//       const chunks = [];
-//       recorder.ondataavailable = (e) => {
-//           chunks.push(e.data);
-//       };
-//       recorder.onstop = (e) => saveToFile(new Blob(chunks));
-//       recorder.start();
-//       setTimeout(() => recorder.stop(), 5000);
-//   })
-// }
-
 function captureTabAudio() {
   chrome.tabCapture.capture({audio: true, video: false}, (stream) => {
     // these lines enable the audio to continue playing while capturing
@@ -63,11 +44,6 @@ function captureTabAudio() {
     console.log("Recording started...");
   });
 }
-
-// function stopAudioCapture() {
-//   recorder.stop();  // Stop the recording
-//   console.log("Recording stopped...");
-// }
 
 ////////////////////
 
