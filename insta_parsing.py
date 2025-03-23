@@ -1,5 +1,6 @@
 import requests
 import json
+import copy
 
 def parseInstaLink(link: str):
     url = "https://api.brightdata.com/datasets/v3/trigger"
@@ -20,12 +21,16 @@ def parseInstaLink(link: str):
     else:
         try:
             response_data = response.json()
+            # print(response_data)
             returnInstaInfo(response_data)
         except json.JSONDecodeError:
             print("Failed to decode JSON response")
 
+import time
 def returnInstaInfo(response_data):
-    url = "https://api.brightdata.com/datasets/v3/snapshot/s_m8kmurc51e7vcrb1a1"
+    snapshot = response_data['snapshot_id']
+    url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot}"
+    print(url)
     headers = {
         "Authorization": "Bearer 90d5132346385f15f61553ea2c06b02d17479b60514f301ad79aef4d2afa903a",
     }
@@ -33,11 +38,15 @@ def returnInstaInfo(response_data):
         "format": "json",
     }
 
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    response2 = requests.get(url, headers=headers, params=params)
+    # print(response2.json())
     # testing code
-    # user_posted = response.json()[0]['user_posted']
+    user_posted = response2.json()[0]['user_posted']
+    print(user_posted)
     # photos = response.json()[0]['photos']
     # print(photos)
-    return response
+    return response2
 
 parseInstaLink("https://www.instagram.com/p/DHXSZxMvV0W/")
