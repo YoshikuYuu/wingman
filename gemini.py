@@ -156,7 +156,8 @@ def generate_rizz(relationship, chat_history, draft=None) -> str:
             )
         )
     except Exception as e:
-        return str(e)
+        print("Error:", e)
+        return None
     
     return response.text
 
