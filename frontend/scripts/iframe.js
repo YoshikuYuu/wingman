@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.getElementById('generate').addEventListener('click', function() {
-    console.log('Read button clicked');
-    chrome.runtime.sendMessage({ action: "readText" });
-});
+// document.getElementById('generate').addEventListener('click', function() {
+//     console.log('Read button clicked');
+//     chrome.runtime.sendMessage({ action: "readText" });
+// });
 
