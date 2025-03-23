@@ -10,3 +10,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    var inputField = document.getElementById("relationship_other");
+
+    inputField.addEventListener("change", function () {
+        var specification = inputField.value;
+
+        console.log("Relationship specification: " + specification);
+
+        // add logic to send to backend
+    });
+
+});

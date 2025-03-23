@@ -8,19 +8,26 @@
   <script src="scripts/otherDropField.js"></script>
   <script src="scripts/loadAnimate.js"></script>
   <script src="scripts/generate.js"></script>
+  <script src="scripts/window.js"></script>
+  <script src="scripts/iframe.js"></script>
+
+  <style>
+    .flip-horizontal {
+    transform: scaleX(-1); 
+    }
+  </style>
 </head>
 
 <html>
   <body class="flex flex-col w-[300px] h-[500px] max-h-[500px] bg-gradient-to-b from-white to-[#ffdff3] overflow-y-hidden">
     <header class="flex justify-center items-center px-4 mt-2 mb-3 w-[100%]">
-      <a href="./home.html" class="text-3xl font-bold leading-10 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">
-        wingman
-      </a>
-      <div class="flex gap-4 justify-between items-center px-2 text-sm">
-        <!-- <a href="./home.html" class="">
-          Dashboard
-        </a> -->
-      </div>
+        <img src="./assets/close.png" id="close" class="scale-5 -ml-38 -mr-25 -mt-28 -mb-30">
+
+        <img src="./assets/wing.png" alt="wing" class="scale-10 -m-30 -mt-28 flip-horizontal">
+        <a href="./home.html" class="text-3xl font-bold leading-10 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">
+            wingman
+        </a>
+        <img src="./assets/wing.png" alt="wing" class="scale-10 -m-30 -mt-28">
     </header>
 
     <hr class="mb-3 border-t-1 border-[#ffcad7]">
@@ -38,7 +45,7 @@
           <option value="Other">Other 🖊️</option>
         </select>
 
-        <input type="text" id="relationship_other" placeholder="Please specify" style="display: none;">
+        <input type="text" id="relationship_other" placeholder="Please specify..." class="mt-2" style="display: none;">
 
       </div>
 
@@ -70,30 +77,6 @@
        
       </div>
 
-      <button id="closeButton">Close</button>
-      <button id="readButton">Read Text</button>
-      <div id="typedMessage">Detecting text (not updated)</div>
-      <script src="scripts/window.js"></script>
-      <script src="scripts/iframe.js"></script>
-      
     </main>
-
-
-    
-    <!-- <footer class="mt-auto px-4 py-3 w-[100%] h-[50px] bg-gray-200 border-t border-gray-600">
-      <div class="flex items-center justify-center px-4">
-        <div class="flex gap-4 justify-between items-center px-2 text-sm">
-          <a href="./home.html" class="">
-            Notes
-          </a>
-        </div>
-        <div class="flex gap-4 justify-between items-center px-2 text-sm">
-          <a href="./home.html" class="">
-            Other feature?
-          </a>
-        </div>
-      </div>
-    </footer> -->
-
   </body>
 </html>
