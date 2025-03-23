@@ -8,24 +8,6 @@ app = Flask(__name__)
 def rizzify():
     data = request.get_json()
 
-    # Test data
-    # data = {
-    #     "relationship": "friend",
-    #     "current_message": "Hey, how are you doing?",
-    #     "chat_history": [
-    #         {
-    #             "type": "text",
-    #             "sender": "user",
-    #             "content": "Hey, how are you doing?"
-    #         },
-    #         {
-    #             "type": "text",
-    #             "sender": "recipient",
-    #             "content": "I'm good, how about you?"
-    #         }
-    #     ]
-    # }
-
     relationship = data.get('relationship')
     if relationship is None:
         relationship = "acquaintance"
@@ -45,4 +27,3 @@ def rizzify():
 
 if __name__ == '__main__':
     app.run(port=8000, host="0.0.0.0", debug=True)
-    # rizzify()
