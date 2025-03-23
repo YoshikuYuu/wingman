@@ -1,5 +1,8 @@
 from google import genai
 from google.genai import types
+import requests
+from PIL import Image
+from io import BytesIO
 
 GEMINI_API_KEY = "AIzaSyDtiSA5fT6kdkjddNdVmuZu1RCGBY2ksX8"
 
@@ -47,8 +50,10 @@ DRAFT_INSTRUCT = """
 NO_DRAFT_INSTRUCT = """
     You are the AI browser extension 'Wingman' that is given the user's chat history, and the user's
     relationship to the recipient. Generate a message for the user that continues the conversation
-    in a way that is appropriate for the user's relationship with the recipient and considers relevant
-    information in the chat history. Your message should imitate the user's texting conventions.
+    in a way that is appropriate for the user's relationship with the recipient. The message should
+    consider relevant 
+    information in the chat history (prioritize responding to more recent messages). Your message
+    should imitate the user's texting conventions.
 
     Example Input 1:
     Relationship: girlfriend
@@ -72,6 +77,43 @@ NO_DRAFT_INSTRUCT = """
     Example Output 2:
     No worries. Take your time and don't overwork yourself!
     """
+DESCRIBE_IMG_INSTRUCT = """
+    Given an image, generate a detailed description of the image. Format the in the following manner:
+    "an image depicting [description of the image]."
+    """
+
+def describe_image(url: str) -> str:
+    try:
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            # Open the image from the response content
+            image = Image.open(BytesIO(response.content))
+
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=["Give a description of this image", image],
+                config=types.GenerateContentConfig(
+                    system_instruction=types.Part.from_text(text=DESCRIBE_IMG_INSTRUCT),
+                    temperature=1,
+                    max_output_tokens=500,
+                    response_mime_type="text/plain",
+                    top_p=0.95,
+                    top_k=40
+                )
+            )
+
+            # Save the image as a JPG file
+            # image.save("image.jpg", "JPEG")
+            # print("Image saved as image.jpg")
+            return response.text
+        else:
+            print("Failed to retrieve the image. Status code:", response.status_code)
+    
+    except Exception as e:
+        return str(e)
+    
 
 def generate_rizz(relationship, chat_history, draft=None) -> str:
     """
@@ -84,7 +126,7 @@ def generate_rizz(relationship, chat_history, draft=None) -> str:
         chat_history (list of dictionaries):
             An ordered list of messages in the chat history. Each dictionary corresponds to a
             message and has the following keys:
-            - "type": The type of message, which can be "text" or "link"
+            - "type": The type of message, which can be "text" or "image"
             - "sender": The sender of the message.
             - "content": The message content.
         relationship (str): The user's relationship to the recipient.
@@ -123,19 +165,18 @@ def process_chat_history(chat_history):
     # Process messages in the chat history into a prompt
     processed_messages = []
     for message in chat_history:
-        if message["type"] == "link":
-            description = process_link(message["content"])
+        if message["type"] == "image":
+            description = describe_image(message["content"])
             if description:  # Only add the description if it is not empty, else ignore the link
                 processed_messages.append(f"{message["sender"]}: {description}")
         elif message["type"] == "text":
             processed_messages.append(f"{message["sender"]}: {message["content"]}")
     return '\n'.join(processed_messages)
 
-def process_link():
-    return "description"
-
-def test_something():
-    pass
+def test_describe_image():
+    url = "https://instagram.fphl1-1.fna.fbcdn.net/v/t51.2885-15/485067168_18512192929008508_1371499067344772488_n.jpg?stp=dst-jpg_e35_s1080x1080_sh0.08_tt6&_nc_ht=instagram.fphl1-1.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QHfDdt2gmQXKGZWgsu0AM3kWkB7FR0i62UNg74Z7zHh3SujFP9XKgIVapHeOXzlLDA&_nc_ohc=k2Jj_uOWwRUQ7kNvgEkCb1E&_nc_gid=zfCi6Rj8DV2VcmDLBgC0sA&edm=ANTKIIoBAAAA&ccb=7-5&oh=00_AYH4ydwuNgQeQhH2fG5dVy45wKqdN0hNExkKc1MtSuTjgw&oe=67E4EE2E&_nc_sid=d885a2"
+    response = describe_image(url)
+    print(response)
 
 def test_generate_rizz():
     test_chat_history = [
@@ -149,5 +190,20 @@ def test_generate_rizz():
     response = generate_rizz(test_relationship, test_chat_history, test_draft)
     print(response)
 
+def test_generate_rizz_advanced():
+    test_chat_history = [
+        {"type": "text", "sender": "user", "content": "ayyy the new Avengers movie came out!"},
+        {"type": "text", "sender": "clkr", "content": "omg ya I saw!"},
+        {"type": "text", "sender": "clkr", "content": "I can't wait to watch it"},
+        {"type": "text", "sender": "clkr", "content": "wdy think of this?"},
+        {"type": "image", "sender": "clkr", "content": "https://media.discordapp.net/attachments/646750685928488990/1353182130452041759/image.png?ex=67e0b890&is=67df6710&hm=8c83542c27265e8451e56f9c6bc692cf95e1002d531ec5bc247347557dcccfa5&=&format=webp&quality=lossless&width=518&height=474"}
+    ]
+    test_relationship = "crush"
+
+    response = generate_rizz(test_relationship, test_chat_history)
+    print(response)
+
 if __name__ == "__main__":
-    test_generate_rizz()
+    # test_generate_rizz()
+    # test_describe_image()
+    test_generate_rizz_advanced()
