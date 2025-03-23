@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    
     const readButton = document.getElementById('readButton');
     if (readButton) {
         readButton.addEventListener('click', function() {
@@ -34,22 +35,81 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function readTextField() {
-    // Find the Instagram message input field
-            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                chrome.scripting.executeScript({
-                    target: { tabId: tabs[0].id },
-                    func: function() {
-                        var inputField = document.querySelector('.x3jgonx');
+    // Find the discord message input field
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            func: function() {
 
-                        if (inputField) {
-                            // Extract the text inside the input field
-                            var typedMessage = inputField.innerText || inputField.value || "";
-                            chrome.runtime.sendMessage({ action: "getMessage", message: typedMessage });
-                        } else {
-                            chrome.runtime.sendMessage({ action: "getMessage", message: null });
-                        }
-                }  
-            });
+
+                // Select all chat message containers
+                const messageContainers = document.querySelectorAll('li.messageListItem__5126c');
+                const messages = {'current-input': 'null', 'chat-history': []};
+
+                // typing input field
+                var inputField = document.querySelector('span[data-slate-string="true"]');
+                console.log("inputField: " + inputField);
+                var typedMessage = inputField ? inputField.innerText : null;
+
+                messages['current-input'] = typedMessage;
+
+                
+                var last_username = "";
+                messageContainers.forEach(container => {
+                    // Extract username
+                    const usernameElement = container.querySelector('.username_c19a55');
+                    var username = usernameElement ? usernameElement.textContent : 'Unknown';
+                    if (username != 'Unknown') {
+                        last_username = username;
+                    } else {
+                        username = last_username;
+                    }
+
+                    // Extract timestamp
+                    const timestampElement = container.querySelector('.timestamp_c19a55 time');
+                    const timestamp = timestampElement ? timestampElement.getAttribute('datetime') : null;
+
+                    // Extract message content
+                    const messageContentElement = container.querySelector('.markup__75297.messageContent_c19a55');
+                    const messageContent = messageContentElement ? messageContentElement.textContent : null;
+
+                    const imageContainer = container.querySelector('.loadingOverlay_af017a');
+                    const imageElement = imageContainer ? imageContainer.querySelector('img') : null;
+                    const imageSrc = imageElement ? imageElement.src : null;
+                    // Create message object
+                    const messageObject = {
+                        username: username,
+                        timestamp: timestamp,
+                        message: messageContent,
+                        imageSrc: imageSrc
+                    };
+                    messages['chat-history'].push(messageObject);
+
+                });
+                // Log the messages JSON object
+                 console.log(JSON.stringify(messages, null, 2));
+                 
+                 try {
+                    const response = fetch("http://127.0.0.1:5000/apply_rizz", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(messages)
+                    });
+                
+                    const data = response.json();
+                      if (data.status === "success") {
+                        console.log(data.message);  // Show success message
+                        window.location.href = "/dashboard";  // Redirect after successful signup
+                      } else {
+                          console.error("Login failed:", data.message);  // Handle error message
+                      }
+                    } catch (error) {
+                      console.error("Error:", error);
+                    }
+                
+            }  
+        });
     });
-
 }
