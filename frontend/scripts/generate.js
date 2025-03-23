@@ -10,8 +10,8 @@ async function prepForRizz() {
         }
 
         // Hide suggestion box if visible
-        if (document.getElementById("suggestion").style.display !== "none") {
-            document.getElementById("suggestion").style.display = "none";
+        if (document.getElementById("rizzbox").style.display !== "none") {
+            document.getElementById("rizzbox").style.display = "none";
         }
 
         // Make loading text visible
@@ -21,24 +21,31 @@ async function prepForRizz() {
         // Get the relationship value
         var relationship = document.getElementById("relationships").value;
 
+
         console.log("Relationship: " + relationship);
+        // if (relationship == 'Other') {
+        //     relationship = document.getElementById("relationship_other").value;
+        // }
+
 
         // Pass the relationship value to the injected script
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+
+
             chrome.scripting.executeScript({
                 target: { tabId: tabs[0].id },
                 func: function (relationship) {
 
                     // Select all chat message containers
                     const messageContainers = document.querySelectorAll('li.messageListItem__5126c');
-                    const messages = { 'current-input': '', 'relationship': '', 'chat-history': [] };
+                    const messages = { 'current_message': '', 'relationship': '', 'chat_history': [] };
 
                     // Typing input field
                     var inputField = document.querySelector('span[data-slate-string="true"]');
                     console.log("inputField: " + inputField);
 
                     var typedMessage = inputField ? inputField.innerText : '';
-                    messages['current-input'] = typedMessage;
+                    messages['current_message'] = typedMessage;
 
                     // Process chat history
                     var last_username = "";
@@ -71,17 +78,19 @@ async function prepForRizz() {
                             message: messageContent,
                             imageSrc: imageSrc
                         };
-                        messages['chat-history'].push(messageObject);
+                        messages['chat_history'].push(messageObject);
                     });
 
                     // Add the relationship to the messages object
-                    console.log("Relationship injected: " + relationship);
+
                     messages['relationship'] = relationship;
+
+                    console.log("Relationship injected: " + relationship);
                     console.log("relationship in messages object: " + messages['relationship']);
                     console.log("Messages object:", JSON.stringify(messages, null, 2));
 
                     // Send the messages object to the backend
-                    fetch("http://127.0.0.1:5000/rizzify", {
+                    fetch("http://127.0.0.1:8000/rizzify", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -91,13 +100,38 @@ async function prepForRizz() {
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === "success") {
-                                console.log(data.message); // Show success message
+                                console.log(data.msg); // Show success message
+
+                                // Send message to update loading text and suggestion box
+                                chrome.runtime.sendMessage({
+                                    action: "updateUI",
+                                    status: "success",
+                                    message: data.msg
+                                });
+
+                                // Unhide generate button
+                                chrome.runtime.sendMessage({
+                                    action: "unhideButton",
+                                    status: "success",
+                                });
                             } else {
-                                console.error("Error:", data.message); // Handle error message
+                                console.error("Error:", data.msg); // Handle error message
+
+                                // Send message to hide loading text in case of error
+                                chrome.runtime.sendMessage({
+                                    action: "updateUI",
+                                    status: "error"
+                                });
                             }
                         })
                         .catch(error => {
                             console.error("Error:", error);
+
+                            // Send message to hide loading text in case of error
+                            chrome.runtime.sendMessage({
+                                action: "updateUI",
+                                status: "error"
+                            });
                         });
                 },
                 args: [relationship]
@@ -106,36 +140,43 @@ async function prepForRizz() {
     });
 }
 
-// GET FUNCTION:
-async function getRizz() {
-    try {
-        const response = await fetch();
-        const data = await response.json();
-        return data;
+// // GET FUNCTION:
+// async function getRizz() {
+//     console.log("Fetching Rizz...");
+//     try {
+//         const response = await fetch("http://127.0.0.1:8000/rizzify");
+//         const data = await response.json();
+//         return data;
 
-    } catch (error) {
-        console.error("Current Site couldn't be fetched.", error);
-    }
-}
+//     } catch (error) {
+//         console.error("Current Site couldn't be fetched.", error);
+//     }
+// }
 
 // parsing
-async function displayRizz() {
-    const data = await getRizz();
+// async function displayRizz() {
+//     console.log("Displaying Rizz...");
+//     const data = await prepForRizz();
+//     console.log("Data: " + data);
+//     // hide loading text
+//     if (document.getElementById("loading").style.display !== "none") {
+//         document.getElementById("loading").style.display = "none";
+//     }
 
-    // hide loading text
-    if (document.getElementById("loading").style.display !== "none") {
-        document.getElementById("loading").style.display = "none";
-    }
+//     // change inner text in box
+//     var suggestionBox = document.getElementById("suggestion");
+//     suggestionBox.innerText = data;
 
-    // change inner text in box
-    var suggestionBox = document.getElementById("suggestion");
-    suggestionBox.innerText = data;
+//     // display box
+//     if (suggestionBox.style.display !== "block") {
+//         suggestionBox.style.display = "block";
+//     }
 
-    // display box
-    if (suggestionBox.style.display !== "block") {
-        suggestionBox.style.display = "block";
-    }
+// }
 
-}
+// document.addEventListener("DOMContentLoaded", function () {
+//     prepForRizz();
+//     displayRizz();  
+// });
 
 document.addEventListener("DOMContentLoaded", prepForRizz);
