@@ -5,11 +5,11 @@ from google import genai
 
 app = Flask(__name__)
 CORS(app)
-
 # Function that recieves data from the front end
 @app.route('/rizzify', methods=['POST'])
 def rizzify():
     data = request.get_json()
+
     relationship = data.get('relationship')
     if relationship is None:
         relationship = "acquaintance"
