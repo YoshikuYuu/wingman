@@ -5,10 +5,10 @@ GEMINI_API_KEY = "AIzaSyDtiSA5fT6kdkjddNdVmuZu1RCGBY2ksX8"
 
 DRAFT_INSTRUCT = """
     You are the AI browser extension 'Wingman' that is given the user's chat history, the user's
-    relationship to the recipient, and the user's draft message. Based on the draft message,
-    generate an improved message that is appropriate for the user's relationship with the 
-    recipient and considers relevant information in the chat history. Your message should
-    imitate the user's texting conventions.
+    relationship to the recipient, and the user's draft message. Generate an improved version of the
+    draft message that is interesting, engaging, and thoughtful. The generated message should be is 
+    appropriate for the user's relationship with the recipient, consider relevant information
+    in the chat history, and imitate the user's texting conventions.
 
     Example Input 1:
     Relationship: girlfriend
@@ -78,7 +78,7 @@ def generate_rizz(relationship, chat_history, draft=None) -> str:
     Generate a message that continues the conversation in a way that is appropriate for the user's
     relationship with the recipient. The message should consider relevant information in the chat
     history and imitate the user's texting conventions. If a draft message is provided, the generated
-    message should be an improved version of the draft message.
+    message should be an improved, more engaging version of the draft message.
 
     Parameters:
         chat_history (list of dictionaries):
@@ -144,8 +144,9 @@ def test_generate_rizz():
         {"type": "text", "sender": "clkr", "content": "I can't wait to watch it"}
     ]
     test_relationship = "crush"
+    test_draft = "let's watch it together"
 
-    response = generate_rizz(test_chat_history, test_relationship)
+    response = generate_rizz(test_relationship, test_chat_history, test_draft)
     print(response)
 
 if __name__ == "__main__":
