@@ -13,7 +13,7 @@ def rizzify():
     relationship = data.get('relationship')
     if relationship is None:
         relationship = "acquaintance"
-    print(f"Relationship: {f"Relationship: {relationship}"}")
+    print(f"Relationship: {relationship}")
     
     current_message = data.get('current_message')
     if current_message is None:
