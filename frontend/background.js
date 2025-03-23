@@ -12,23 +12,16 @@ function getTabUrl(tabId, callback) {
 }
 
 function injectFloatingIframe(tabId) {
-
-
     console.log("Injecting floating iframe.");
-    
     
     chrome.scripting.executeScript({
         target: { tabId: tabId },
         func: function() {
-
-
-
             // Check if the iframe already exists
             var existingIframe = document.getElementById('floatingIframe');
             if (existingIframe) {
                 console.log("Floating iframe already exists. Removing ");
                 return;
-                
             }
 
             console.log("Creating floating iframe.");
@@ -44,16 +37,12 @@ function injectFloatingIframe(tabId) {
             floatingIframe.style.border = '1px solid black';
             floatingIframe.style.zIndex = '10000';
             floatingIframe.src = chrome.runtime.getURL('iframe.html');
-        
-        // print the src attribute to the iframe 
-        console.log("iframe src: " + floatingIframe.src);
 
-        document.body.appendChild(floatingIframe);
+            // Append the iframe to the document body
+            document.body.appendChild(floatingIframe);
         }
-});
+    });
 }
-
-
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "removeIframe") {
@@ -111,3 +100,4 @@ chrome.tabs.onHighlighted.addListener((highlightInfo) => {
         }
     });
 });
+

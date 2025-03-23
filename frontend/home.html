@@ -1,99 +1,14 @@
-<!doctype html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="./output.css" rel="stylesheet">
-  <script src="scripts/copy.js"></script>
-  <script src="scripts/otherDropField.js"></script>
-  <script src="scripts/loadAnimate.js"></script>
-  <script src="scripts/generate.js"></script>
-</head>
+    <head>
+        <link href="./output.css" rel="stylesheet">
+        <script src="scripts/home.js"></script>
+    </head>
 
-<html>
-  <body class="flex flex-col w-[300px] h-[500px] max-h-[500px] bg-gradient-to-b from-white to-[#ffdff3] overflow-y-hidden">
-    <header class="flex justify-center items-center px-4 mt-2 mb-3 w-[100%]">
-      <a href="./home.html" class="text-3xl font-bold leading-10 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">
-        wingman
-      </a>
-      <div class="flex gap-4 justify-between items-center px-2 text-sm">
-        <!-- <a href="./home.html" class="">
-          Dashboard
-        </a> -->
-      </div>
-    </header>
+    <body class="w-[300px] h-[300px]">
+        <h1>Audio Share</h1>
+        <button id="share-audio-button">Share Audio</button>
+        <button id="stopButton">Stop Recording</button>
+        <input type="text" id="result" placeholder="waiting for audio result class="mt-2" style="display: square;">
 
-    <hr class="mb-3 border-t-1 border-[#ffcad7]">
-    
-    <main class="p-6 overflow-y-scroll no-scrollbar">
-      <div class="px-2 -mt-3 mb-3">
-        <h1 id="main alignment" class="text-xl leading-5.5 -mt-1 mb-2 font-bold opacity-0 translate-y-5 transition-all duration-700 ease-out">
-          What's your relationship with this contact?
-        </h1>
-
-        <select id="relationships" class="bg-[#ff7350] p-2 -ml-1 rounded-4xl text-white text-[12px] font-bold opacity-0 translate-y-5 transition-all duration-700 ease-out">
-          <option value="Colleague">Colleague 🤝</option>
-          <option value="Friend">Friend 🫂</option>
-          <option value="Significant Other">Significant Other 💗</option>
-          <option value="Other">Other 🖊️</option>
-        </select>
-
-        <input type="text" id="relationship_other" placeholder="Please specify" style="display: none;">
-
-      </div>
-
-      <hr class="mt-5 mb-3 border-t-1 border-[#ffcad7]">
-      
-      <div id="GRAPH SEC" class="">
-        <button id="generate" class="bg-[#ff7350] p-2 px-4 rounded-4xl text-white text-xl font-bold" style="display: block;">
-          Generate! 🚀
-        </button>
-
-        <p id="loading" style="display: none;">Loading...</p>
-
-        <div id="rizzbox" style="display: none;">
-          <h1 class="flex items-center justify-center mx-auto py-2 text-xl text-[#ff9fa2] font-bold ">
-          Here's what we got:
-          </h1>
-          <div class="bg-white text-black p-2 rounded-md border-1 border-[#ffcad7]"> 
-            <p id="suggestion" class="overflow-hidden whitespace-normal">
-              Here's what we got:Here's what we got:Here's what we got:Here's what we got:Here's what we got:Here's what we got:Here's what we got:Here's what we got:Here's what we got:Here's what we got:
-            </p>
-          </div>
-
-          <div class="flex items-center justify-center -mt-2">
-            <button id="copyButton" class="bg-[#ff7350] p-2 mt-4 rounded-4xl text-white text-[14px] font-bold ">Copy text</button>
-            <script src="scripts/copy.js"></script>
-          </div>
-        </div>
-        
-       
-      </div>
-
-      <button id="closeButton">Close</button>
-      <button id="readButton">Read Text</button>
-      <div id="typedMessage">Detecting text (not updated)</div>
-      <script src="scripts/window.js"></script>
-      <script src="scripts/iframe.js"></script>
-      
-    </main>
-
-
-    
-    <!-- <footer class="mt-auto px-4 py-3 w-[100%] h-[50px] bg-gray-200 border-t border-gray-600">
-      <div class="flex items-center justify-center px-4">
-        <div class="flex gap-4 justify-between items-center px-2 text-sm">
-          <a href="./home.html" class="">
-            Notes
-          </a>
-        </div>
-        <div class="flex gap-4 justify-between items-center px-2 text-sm">
-          <a href="./home.html" class="">
-            Other feature?
-          </a>
-        </div>
-      </div>
-    </footer> -->
-
-  </body>
+    </body>
 </html>

@@ -63,21 +63,22 @@ document.addEventListener('DOMContentLoaded', function () {
 async function send_audio(name) {
   console.log("Reached2");
   // TODO
-  let filename = "C:/Users/Janet/Downloads/" + name;
+  
+  let filename = "C:/Users/colle/Downloads/" + name;
 
   try {
-    const response = await fetch("http://127.0.0.1:81/audio_advice", {
+    const response = await fetch("http://127.0.0.1:8000/audio_advice", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({"filename": filename})
     });
-
+    const result_text = document.getElementById("result");
     const data = await response.json();
       if (data.status === "success") {
         console.log(data.message);  // Show success message
-        window.location.href = "/dashboard";  // Redirect after successful signup
+        result_text.innerText = data.message;
       } else {
           console.error("Login failed:", data.message);  // Handle error message
       }

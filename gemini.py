@@ -178,11 +178,11 @@ def process_chat_history(chat_history):
     processed_messages = []
     for message in chat_history:
         if message["type"] == "image":
-            description = describe_image(message["content"])
+            description = describe_image(message['content'])
             if description:  # Only add the description if it is not empty, else ignore the link
-                processed_messages.append(f"{message["sender"]}: {description}")
+                processed_messages.append(f"{message['sender']}: {description}")
         elif message["type"] == "text":
-            processed_messages.append(f"{message["sender"]}: {message["content"]}")
+            processed_messages.append(f"{message['sender']}: {message['content']}")
     return '\n'.join(processed_messages)
 
 def test_describe_image():

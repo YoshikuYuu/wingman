@@ -22,6 +22,9 @@ async function prepForRizz() {
         var relationship = document.getElementById("relationships").value;
 
         console.log("Relationship: " + relationship);
+        // if (relationship == 'Other') {
+        //     relationship = document.getElementById("relationship_other").value;
+        // }
 
         // Pass the relationship value to the injected script
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -31,18 +34,19 @@ async function prepForRizz() {
 
                     // Select all chat message containers
                     const messageContainers = document.querySelectorAll('li.messageListItem__5126c');
-                    const messages = { 'current-input': '', 'relationship': '', 'chat-history': [] };
+                    const messages = { 'current_input': '', 'relationship': '', 'chat_history': [] };
 
                     // Typing input field
                     var inputField = document.querySelector('span[data-slate-string="true"]');
                     console.log("inputField: " + inputField);
 
                     var typedMessage = inputField ? inputField.innerText : '';
-                    messages['current-input'] = typedMessage;
-
+                    messages['current_input'] = typedMessage;
+                    console.log("Current input: " + typedMessage);
                     // Process chat history
                     var last_username = "";
                     messageContainers.forEach(container => {
+  
                         // Extract username
                         const usernameElement = container.querySelector('.username_c19a55');
                         var username = usernameElement ? usernameElement.textContent : 'Unknown';
@@ -55,15 +59,15 @@ async function prepForRizz() {
                         // Extract timestamp
                         const timestampElement = container.querySelector('.timestamp_c19a55 time');
                         const timestamp = timestampElement ? timestampElement.getAttribute('datetime') : '';
-
+                        console.log("Timestamp: " + timestamp);
                         // Extract message content
                         const messageContentElement = container.querySelector('.markup__75297.messageContent_c19a55');
                         const messageContent = messageContentElement ? messageContentElement.textContent : '';
-
+                        console.log("Message content: " + messageContent);
                         const imageContainer = container.querySelector('.loadingOverlay_af017a');
                         const imageElement = imageContainer ? imageContainer.querySelector('img') : '';
                         const imageSrc = imageElement ? imageElement.src : '';
-
+                        console.log("Image source: " + imageSrc);
                         // Create message object
                         const messageObject = {
                             username: username,
@@ -71,7 +75,7 @@ async function prepForRizz() {
                             message: messageContent,
                             imageSrc: imageSrc
                         };
-                        messages['chat-history'].push(messageObject);
+                        messages['chat_history'].push(messageObject);
                     });
 
                     // Add the relationship to the messages object
@@ -81,7 +85,7 @@ async function prepForRizz() {
                     console.log("Messages object:", JSON.stringify(messages, null, 2));
 
                     // Send the messages object to the backend
-                    fetch("http://127.0.0.1:5000/rizzify", {
+                    fetch("http://127.0.0.1:8000/rizzify", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -91,13 +95,36 @@ async function prepForRizz() {
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === "success") {
-                                console.log(data.message); // Show success message
+                                console.log(data.msg); // Show success message
+                                chrome.runtime.sendMessage({
+                                    action: "updateUI",
+                                    status: "success",
+                                    message: data.msg
+                                });
+
+                                chrome.runtime.sendMessage({
+                                    action: "unhideButton",
+                                    status: "success",
+                                });
+
                             } else {
-                                console.error("Error:", data.message); // Handle error message
+                                console.error("Error:", data.msg); // Handle error message
+                                
+                                chrome.runtime.sendMessage({
+                                    action: "updateUI",
+                                    status: "error"
+                                });
+                            
                             }
                         })
                         .catch(error => {
                             console.error("Error:", error);
+
+                            chrome.runtime.sendMessage({
+                                action: "updateUI",
+                                status: "error"
+                            });
+
                         });
                 },
                 args: [relationship]
@@ -139,3 +166,4 @@ async function displayRizz() {
 }
 
 document.addEventListener("DOMContentLoaded", prepForRizz);
+
