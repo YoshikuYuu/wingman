@@ -39,5 +39,27 @@ def rizzify():
     else:
         return jsonify({"status": "success", "msg": return_msg})
 
+@app.route('/audio_advice', methods=['POST'])
+def audio_advice():
+    data = request.get_json()
+    relationship = data.get('relationship')
+    if relationship is None:
+        relationship = "Crush"
+    print(f"Relationship: {relationship}")
+    filename = str(data.get('filename'))
+    print("Filename: " + filename)
+    transcription = gemini_transcribe(filename)
+
+    chat_history = [{'type': 'text', 'sender': str(relationship), 'content': str(transcription)}]
+
+    return_msg = generate_rizz(relationship, chat_history)
+
+    print(return_msg)
+    if return_msg is None:
+        return jsonify({"status": "error", "msg": "Failed to generate a message."})
+    else:
+        return jsonify({"status": "success", "msg": return_msg})
+ 
+
 if __name__ == '__main__':
     app.run(port=8000, host="0.0.0.0", debug=True)

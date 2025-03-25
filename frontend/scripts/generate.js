@@ -21,6 +21,11 @@ async function prepForRizz() {
         // Get the relationship value
         var relationship = document.getElementById("relationships").value;
 
+        if (relationship === "Other") {
+
+            relationship = document.getElementById("relationship_other").value
+            console.log("Other relationship: " + document.getElementById("relationship_other"));
+        }
 
         console.log("Relationship: " + relationship);
 
@@ -43,18 +48,29 @@ async function prepForRizz() {
                     var typedMessage = inputField ? inputField.innerText : '';
                     messages['current_input'] = typedMessage;
                     console.log("Current input: " + typedMessage);
-                    // Process chat history
-                    var last_username = "";
-                    messageContainers.forEach(container => {
-  
-                        // Extract username
-                        const usernameElement = container.querySelector('.username_c19a55');
-                        var username = usernameElement ? usernameElement.textContent : 'Unknown';
-                        if (username !== 'Unknown') {
-                            last_username = username;
-                        } else {
-                            username = last_username;
-                        }
+
+
+                   // Get the current user
+                   const currentUserElement = document.querySelector('.title_b6c092');
+                   const currentUser = currentUserElement ? currentUserElement.textContent : 'Unknown';
+                   console.log("Current user: " + currentUser);
+
+                   // Process chat history
+                   var last_username = "";
+
+                   messageContainers.forEach(container => {
+                       // Extract username
+                       const usernameElement = container.querySelector('.username_c19a55');
+                       var username = usernameElement ? usernameElement.textContent : 'Unknown';
+
+                       if (username === currentUser) {
+                           username = 'user';
+                       }
+                       if (username !== 'Unknown') {
+                           last_username = username;
+                       } else {
+                           username = last_username;
+                       }
 
                         // Extract timestamp
                         const timestampElement = container.querySelector('.timestamp_c19a55 time');

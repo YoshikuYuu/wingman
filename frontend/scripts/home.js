@@ -77,10 +77,10 @@ async function send_audio(name) {
     const result_text = document.getElementById("result");
     const data = await response.json();
       if (data.status === "success") {
-        console.log(data.message);  // Show success message
-        result_text.innerText = data.message;
+        console.log(data.msg);  // Show success message
+        result_text.innerText = data.msg;
       } else {
-          console.error("Login failed:", data.message);  // Handle error message
+          console.error("Login failed:", data.msg);  // Handle error message
       }
     } catch (error) {
       console.error("Error:", error);
